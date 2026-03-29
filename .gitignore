@@ -1,0 +1,24 @@
+# --- Logs e Temporários ---
+*.log
+*.tmp
+*.bak
+*.swp
+.cache/
+
+# --- Arquivos de Configuração Sensíveis ---
+# (Nunca suba senhas ou chaves de API)
+.env
+config.local.sh
+credentials.json
+
+# --- Arquivos do Sistema Operacional ---
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# --- Binários e Compilados (se houver) ---
+*.o
+*.out
+*.exe
+dist/
+build/
