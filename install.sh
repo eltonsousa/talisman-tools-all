@@ -1,6 +1,18 @@
 #!/bin/bash
 
-# Identifica a versão do Ubuntu
+# --- CONFIGURAÇÕES DO REPOSITÓRIO ---
+# Troque pelo seu novo repositório quando criar
+REPO_USER="eltonsousa"
+REPO_NAME="talisman-tools-all"
+RAW_URL="https://raw.githubusercontent.com/$REPO_USER/$REPO_NAME/main"
+TARGET_DIR="/home/talisman/.talisman-tools"
+
+clear
+echo "============================================================"
+echo "          🛡️ TALISMAN-TOOLS-ALL | INSTALADOR UNIVERSAL"
+echo "============================================================"
+
+# 1. Identifica a versão do Ubuntu
 if [ -f /etc/os-release ]; then
     . /etc/os-release
     OS_VER=$VERSION_ID
@@ -9,19 +21,24 @@ else
     exit 1
 fi
 
-echo "🛡️ Talisman-Tools-All | Detectado: Ubuntu $OS_VER"
+echo "[*] Sistema Detectado: Ubuntu $OS_VER"
+
+# 2. Prepara dependências básicas
+apt-get update -qq && apt-get install wget unzip curl -y -qq > /dev/null 2>&1
+
+# 3. Lógica de Instalação Específica (Baixa apenas o necessário)
+mkdir -p "$TARGET_DIR"
+cd /tmp
 
 case $OS_VER in
     "22.04")
-        echo "📂 Entrando na pasta ubuntu_22..."
-        chmod +x ubuntu_22/install_u22.sh
-        bash ubuntu_22/install_u22.sh
+        echo "[*] Baixando instalador otimizado para Ubuntu 22.04..."
+        wget -q "$RAW_URL/ubuntu_22/install_u22.sh" -O setup_os.sh
     ;;
     
     "14.04")
-        echo "📂 Entrando na pasta ubuntu_14..."
-        chmod +x ubuntu_14/install_u14.sh
-        bash ubuntu_14/install_u14.sh
+        echo "[*] Baixando instalador legado para Ubuntu 14.04..."
+        wget -q "$RAW_URL/ubuntu_14/install-server-talisman.sh" -O setup_os.sh
     ;;
     
     *)
@@ -30,43 +47,28 @@ case $OS_VER in
     ;;
 esac
 
+# Executa o script de ambiente (MySQL, Apache, PHP, etc)
+if [ -f "setup_os.sh" ]; then
+    chmod +x setup_os.sh
+    sudo ./setup_os.sh
+else
+    echo "❌ Erro ao baixar o script de configuração do SO."
+    exit 1
+fi
 
-# CONFIGURAÇÕES:
-TARGET_DIR="/home/talisman/.talisman-tools"
-ZIP_URL="https://github.com/eltonsousa/talisman-tools/archive/refs/heads/main.zip"
-
-clear
-echo "============================================================"
-echo "       INSTALANDO TALISMAN TOOLS VIA GITHUB ZIP"
-echo "============================================================"
-
-
-
-# Instala dependências silenciosamente
-apt-get update -qq && apt-get install unzip wget -y -qq > /dev/null 2>&1
-
-# Cria a pasta oculta
-mkdir -p "$TARGET_DIR"
-
-# Baixa o ZIP
-echo "[*] Baixando arquivos..."
+# 4. Baixa os arquivos de ferramentas (Menu, Scripts de Gerenciamento)
+echo "[*] Sincronizando ferramentas do Talisman-Tools..."
+ZIP_URL="https://github.com/$REPO_USER/$REPO_NAME/archive/refs/heads/main.zip"
 wget -q "$ZIP_URL" -O /tmp/talisman.zip
-
-# Extrai o conteúdo
-echo "[*] Extraindo e configurando..."
 unzip -oq /tmp/talisman.zip -d /tmp/
 
-# O GitHub coloca dentro de uma pasta 'nome-do-repo-main'
-# Vamos mover tudo de lá para a nossa pasta final
-cp -rf /tmp/talisman-tools-main/* "$TARGET_DIR/" 2>/dev/null
+# Move o conteúdo da pasta principal do repo para o diretório final
+cp -rf /tmp/$REPO_NAME-main/* "$TARGET_DIR/" 2>/dev/null
 
-# Limpeza
-rm -rf /tmp/talisman-tools-main /tmp/talisman.zip
-
-# Permissões
+# 5. Configuração de Atalhos e Permissões
 chmod +x "$TARGET_DIR"/*.sh
 
-# Configura o atalho 'menu' no sistema
+# Cria o alias 'menu' para root e para o usuário talisman
 for rc in "/root/.bashrc" "/home/talisman/.bashrc"; do
     if [ -f "$rc" ]; then
         sed -i '/alias menu=/d' "$rc"
@@ -74,20 +76,16 @@ for rc in "/root/.bashrc" "/home/talisman/.bashrc"; do
     fi
 done
 
-# 1. Garante o comando no sistema todo (sem reboot)
-sudo ln -sf /home/talisman/.talisman-tools/menu.sh /usr/local/bin/menu
+# Garante o comando no sistema todo
+sudo ln -sf "$TARGET_DIR/menu.sh" /usr/local/bin/menu
 sudo chmod +x /usr/local/bin/menu
 
-# 2. Abre o menu para o usuário imediatamente
+# 6. Finalização
 clear
 echo "============================================================"
-echo "   INSTALAÇÃO CONCLUÍDA! DIGITE 'menu' PARA COMEÇAR."
-echo "============================================================"
-echo "============================================================"
-echo "   ABRINDO O MENU..."
+echo "   ✅ INSTALAÇÃO CONCLUÍDA NO UBUNTU $OS_VER!"
+echo "   DIGITE 'menu' PARA GERENCIAR SEU SERVIDOR."
 echo "============================================================"
 
-sleep 3
-
-bash /home/talisman/.talisman-tools/menu.sh
-
+sleep 2
+menu
