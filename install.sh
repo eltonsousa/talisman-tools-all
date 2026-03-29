@@ -88,4 +88,4 @@ echo "   DIGITE 'menu' PARA GERENCIAR SEU SERVIDOR."
 echo "============================================================"
 
 sleep 2
-menu
+bash "$TARGET_DIR/menu.sh"
