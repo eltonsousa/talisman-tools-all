@@ -62,8 +62,14 @@ ZIP_URL="https://github.com/$REPO_USER/$REPO_NAME/archive/refs/heads/main.zip"
 wget -q "$ZIP_URL" -O /tmp/talisman.zip
 unzip -oq /tmp/talisman.zip -d /tmp/
 
-# Move o conteúdo da pasta principal do repo para o diretório final
-cp -rf /tmp/$REPO_NAME-main/* "$TARGET_DIR/" 2>/dev/null
+# Definimos a subpasta baseada na versão detectada no Passo 3
+case $OS_VER in
+    "22.04") SUB_FOLDER="ubuntu_22" ;;
+    "14.04") SUB_FOLDER="ubuntu_14" ;;
+esac
+
+# O '*' no final garante que os arquivos dentro da pasta vão para a raiz de .talisman-tools
+cp -rf /tmp/$REPO_NAME-main/$SUB_FOLDER/* "$TARGET_DIR/" 2>/dev/null
 
 # 5. Configuração de Atalhos e Permissões
 chmod +x "$TARGET_DIR"/*.sh
