@@ -9,7 +9,7 @@ TARGET_DIR="/home/talisman/.talisman-tools"
 
 clear
 echo "============================================================"
-echo "          🛡️ TALISMAN-TOOLS-ALL | INSTALADOR UNIVERSAL"
+echo "          INSTALADOR TALISMAN-TOOLS-ALL | by ELTON"
 echo "============================================================"
 
 # 1. Identifica a versão do Ubuntu
