@@ -2,7 +2,7 @@
 
 # ==========================================================
 # SCRIPT MESTRE DE INSTALAÇÃO E CONFIGURAÇÃO - TALISMAN ONLINE
-# CONFIGURADO PARA: UBUNTU 14.04 | by ELTON SOUSA
+# CONFIGURADO PARA: UBUNTU 22.04 | by ELTON SOUSA
 # VERSÃO: 2.1 (ESTÉTICA MODERNA + LOG INTELIGENTE)
 # ==========================================================
 
@@ -25,7 +25,7 @@ erro() { echo -e "${VERMELHO}[ERRO]${SEM_COR} $1"; }
 passo() { echo -e "\n${CIANO}>>> Passo $1: $2${SEM_COR}"; }
 
 clear
-titulo "INSTALAÇÃO DO SERVIDOR TALISMAN (UBUNTU 14-i1386)"
+titulo "INSTALAÇÃO DO SERVIDOR TALISMAN (UBUNTU 22)"
 
 # VERIFICAÇÃO DE ROOT
 if [ "$EUID" -ne 0 ]; then
@@ -81,7 +81,7 @@ if [[ "$INSTALAR_SERVIDOR" =~ ^[Ss]$ ]]; then
     sleep 2
     clear
     
-    passo "5" "Bibliotecas 32-bits (Ajustado para Ubuntu 22)"
+    passo "6" "Bibliotecas 32-bits (Ajustado para Ubuntu 22)"
     
     sudo dpkg --add-architecture i386
     sudo apt update
@@ -102,7 +102,7 @@ if [[ "$INSTALAR_SERVIDOR" =~ ^[Ss]$ ]]; then
     read -p "  [?] DIGITE O NOVO NOME DO SERVIDOR: " NOVO_NOME
     echo -e "${AZUL}------------------------------------------------------------${SEM_COR}"
     
-    passo "6" "CONFIGURAÇÃO DOS ARQUIVOS .ini"
+    passo "7" "CONFIGURAÇÃO DOS ARQUIVOS .ini"
     DIRETORIO_BASE="/home/talisman/server"
     ORIGEM_REGISTRO="/home/talisman/pagina-registro"
     
@@ -162,7 +162,7 @@ if [[ "$INSTALAR_SERVIDOR" =~ ^[Ss]$ ]]; then
         erro "Pasta SERVER não encontrada!"
     fi
     
-    passo "7" "GERANDO SCRIPT DE BOOT INTELIGENTE"
+    passo "8" "GERANDO SCRIPT DE BOOT INTELIGENTE"
 cat << 'EOF' > /home/talisman/ligar_servidor.sh
 #!/bin/bash
 PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
@@ -216,12 +216,12 @@ EOF
     chown talisman:talisman /home/talisman/ligar_servidor.sh
     sucesso "Script /home/talisman/ligar_servidor.sh criado."
     
-    passo "8" "CONFIGURANDO INICIALIZAÇÃO AUTOMÁTICA DO SERVIDOR TALISMAN"
+    passo "9" "CONFIGURANDO INICIALIZAÇÃO AUTOMÁTICA DO SERVIDOR TALISMAN"
     (crontab -u talisman -l 2>/dev/null; echo "@reboot /home/talisman/ligar_servidor.sh") | crontab -u talisman -
     
     sucesso "Boot automático configurado via Crontab"
     
-    passo "9" "LIBERANDO ACESSO REMOTO MYSQL"
+    passo "10" "LIBERANDO ACESSO REMOTO MYSQL"
     if [ -f "/etc/mysql/mysql.conf.d/mysqld.cnf" ]; then
         sed -i 's/bind-address.*/bind-address = 0.0.0.0/' /etc/mysql/mysql.conf.d/mysqld.cnf
         service mysql restart > /dev/null
@@ -233,7 +233,7 @@ EOF
     
     sucesso "MySQL liberado para conexões externas (Navicat)."
     
-    passo "10" "INSTALANDO PÁGINA DE REGISTRO"
+    passo "11" "INSTALANDO PÁGINA DE REGISTRO"
     ORIGEM_REGISTRO="/home/talisman/pagina-registro"
     
     while [ ! -d "$ORIGEM_REGISTRO" ]; do
