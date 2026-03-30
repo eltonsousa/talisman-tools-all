@@ -33,7 +33,7 @@ cd /tmp
 case $OS_VER in
     "22.04")
         echo "[*] Baixando instalador otimizado para Ubuntu 22.04..."
-        wget -q "$RAW_URL/ubuntu_22/install_u22.sh" -O setup_os.sh
+        wget -q "$RAW_URL/ubuntu_22/install-server-talisman.sh" -O setup_os.sh
     ;;
     
     "14.04")
