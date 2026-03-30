@@ -185,7 +185,7 @@ done
 sleep 10
 
 echo "[3/3] GAME SERVER..."
-/usr/bin/screen -dmS game /bin/bash -c "cd $DIR_GAME && ./game_server"
+/usr/bin/screen -dmS game /bin/bash -c "cd $DIR_GAME && ./game_server > log_erro_game.txt 2>&1"
 EOF
     chmod +x /home/talisman/ligar_server_ubuntu_10.sh
     chown talisman:talisman /home/talisman/ligar_server_ubuntu_10.sh
