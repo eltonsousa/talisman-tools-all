@@ -44,8 +44,8 @@ menu() {
         5) bash /home/talisman/.talisman-tools/config_ip_e_senha_server_talisman.sh ;;
         6) bash /home/talisman/.talisman-tools/email.sh ;;
         7) bash /home/talisman/.talisman-tools/criar_gm.sh ;;
-        8) bash /home/talisman/.talisman-tools/ligar_server_ubuntu_14.sh ;;
-        9) bash /home/talisman/.talisman-tools/desligar_server_ubuntu_14.sh ;; # Nova Opção!
+        8) bash /home/talisman/.talisman-tools/ligar_server_ubuntu-menu.sh ;;
+        9) bash /home/talisman/.talisman-tools/desligar_server_ubuntu-menu.sh ;;
         0) exit 0 ;;
         *) echo -e "${VERMELHO}Opção Inválida!${SEM_COR}"; sleep 2; menu ;;
     esac

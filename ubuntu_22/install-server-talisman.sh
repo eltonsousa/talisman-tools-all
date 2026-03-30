@@ -170,6 +170,12 @@ export HOME=/home/talisman
 
 sleep 5
 
+# Garante que o MySQL está respondendo antes de tentar ligar o DB_SERVER
+until mysqladmin ping -h localhost --silent; do
+    echo "Aguardando MySQL ficar pronto para conexões..."
+    sleep 2
+done
+
 DIR_DB="/home/talisman/server/db"
 DIR_LOGIN="/home/talisman/server/login"
 DIR_GAME="/home/talisman/server/game"
@@ -184,13 +190,13 @@ rm -f "$DIR_DB"/*.pid "$DIR_LOGIN"/*.pid "$DIR_GAME"/*.pid 2>/dev/null
 /usr/bin/screen -wipe > /dev/null
 
 echo "[1/3] DB SERVER..."
-/usr/bin/screen -dmS db bash -c "cd $DIR_DB && ./db_server"
+/usr/bin/screen -dmS db /bin/bash -c "cd $DIR_DB && ./db_server"
 
 sleep 10
 
 echo "[2/3] LOGIN SERVER..."
 rm -f "$DIR_LOG_LOGIN"/login_server_*.log
-/usr/bin/screen -dmS login bash -c "cd $DIR_LOGIN && ./login_server"
+/usr/bin/screen -dmS login /bin/bash -c "cd $DIR_LOGIN && ./login_server"
 
 while true; do
   ULTIMO_LOG=$(ls -t "$DIR_LOG_LOGIN"/login_server_*.log 2>/dev/null | head -1)
@@ -209,7 +215,7 @@ done
 sleep 10
 
 echo "[3/3] GAME SERVER..."
-/usr/bin/screen -dmS game bash -c "cd $DIR_GAME && ./game_server"
+/usr/bin/screen -dmS game /bin/bash -c "cd $DIR_GAME && ./game_server"
 EOF
     
     chmod +x /home/talisman/ligar_servidor.sh
@@ -217,7 +223,8 @@ EOF
     sucesso "Script /home/talisman/ligar_servidor.sh criado."
     
     passo "9" "CONFIGURANDO INICIALIZAÇÃO AUTOMÁTICA DO SERVIDOR TALISMAN"
-    (crontab -u talisman -l 2>/dev/null; echo "@reboot /home/talisman/ligar_servidor.sh") | crontab -u talisman -
+    (crontab -u talisman -l 2>/dev/null; echo "@reboot /home/talisman/ligar_servidor.sh > /home/talisman/log_boot.txt 2>&1
+    ") | crontab -u talisman -
     
     sucesso "Boot automático configurado via Crontab"
     
