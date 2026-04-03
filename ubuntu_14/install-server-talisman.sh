@@ -193,7 +193,7 @@ EOF
     sucesso "Script /home/talisman/ligar_servidor.sh criado."
     
     passo "8" "CONFIGURANDO INICIALIZAÇÃO AUTOMÁTICA DO SERVIDOR TALISMAN"
-    (crontab -u talisman -l 2>/dev/null; echo "@reboot /home/talisman/ligar_servidor.sh") | crontab -u talisman -
+    (crontab -u talisman -l 2>/dev/null; echo "@reboot /home/talisman/ligar_servidor.sh > /home/talisman/log_boot.txt 2>&1") | crontab -u talisman -
     
     sucesso "Boot automático configurado via Crontab"
     
