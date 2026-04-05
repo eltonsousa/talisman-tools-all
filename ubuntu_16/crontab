@@ -1,0 +1,1 @@
+@reboot sleep 30 && /home/talisman/ligar_servidor.sh > /home/talisman/log_boot.txt 2>&1
