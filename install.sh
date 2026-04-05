@@ -75,8 +75,11 @@ unzip -oq /tmp/talisman.zip -d /tmp/
 
 # Definimos a subpasta baseada na versão detectada no Passo 3
 case $OS_VER in
-    "22.04") SUB_FOLDER="ubuntu_22" ;;
+    "10.04") SUB_FOLDER="ubuntu_10" ;;
     "14.04") SUB_FOLDER="ubuntu_14" ;;
+    "16.04") SUB_FOLDER="ubuntu_16" ;;
+    "20.04") SUB_FOLDER="ubuntu_20" ;;
+    "22.04") SUB_FOLDER="ubuntu_22" ;;
 esac
 
 # O '*' no final garante que os arquivos dentro da pasta vão para a raiz de .talisman-tools
