@@ -31,14 +31,25 @@ mkdir -p "$TARGET_DIR"
 cd /tmp
 
 case $OS_VER in
-    "22.04")
-        echo "[*] Baixando instalador otimizado para Ubuntu 22.04..."
-        wget -q "$RAW_URL/ubuntu_22/install-server-talisman.sh" -O setup_os.sh
+    
+    "10.04")
+        echo "[*] Baixando instalador legado para Ubuntu 10.04..."
+        wget -q "$RAW_URL/ubuntu_10/install-server-talisman.sh" -O setup_os.sh
     ;;
     
     "14.04")
         echo "[*] Baixando instalador legado para Ubuntu 14.04..."
         wget -q "$RAW_URL/ubuntu_14/install-server-talisman.sh" -O setup_os.sh
+    ;;
+    
+    "16.04")
+        echo "[*] Baixando instalador legado para Ubuntu 16.04..."
+        wget -q "$RAW_URL/ubuntu_16/install-server-talisman.sh" -O setup_os.sh
+    ;;
+    
+    "22.04")
+        echo "[*] Baixando instalador otimizado para Ubuntu 22.04..."
+        wget -q "$RAW_URL/ubuntu_22/install-server-talisman.sh" -O setup_os.sh
     ;;
     
     *)
