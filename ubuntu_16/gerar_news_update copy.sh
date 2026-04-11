@@ -20,32 +20,23 @@ clear
 titulo "GERENCIADOR DE NEWS - TALISMAN ONLINE"
 
 # --- AJUSTE SOLICITADO: VERIFICAÇÃO DE DIRETÓRIO ---
-PASTA_PATCH="/var/www/html/patch"
-PASTA_DOWNLOAD="$PASTA_PATCH/download"
-PASTA_MARS="$PASTA_PATCH/files_to_update/local/mars"
+PASTA_MARS="/var/www/html/patch/files_to_update/local/mars"
 
-# Função interna para criar e dar permissão
-verificar_e_criar() {
-    if [ ! -d "$1" ]; then
-        aviso "Diretório $1 não encontrado."
-        echo -e "${CIANO}>>> Criando diretório...${SEM_COR}"
-        sudo mkdir -p "$1"
-        sucesso "Criado: $1"
-    fi
-}
-
-# Verifica ambas as pastas necessárias
-verificar_e_criar "$PASTA_MARS"
-verificar_e_criar "$PASTA_DOWNLOAD"
-
-# Ajuste global de permissões em /patch/
-# Isso garante que você e o Apache (www-data) possam ler/escrever
-echo -e "${CIANO}>>> Ajustando privilégios em $PASTA_PATCH...${SEM_COR}"
-sudo chown -R $USER:www-data "$PASTA_PATCH"
-sudo chmod -R 775 "$PASTA_PATCH"
-
-sucesso "Estrutura de pastas e permissões prontas!"
-echo ""
+if [ ! -d "$PASTA_MARS" ]; then
+    aviso "Pasta de arquivos editados (mars) não encontrada."
+    echo -e "${CIANO}>>> Criando diretório com privilégios de root...${SEM_COR}"
+    
+    # Criamos a pasta usando sudo
+    sudo mkdir -p "$PASTA_MARS"
+    
+    # Ajustamos o dono da pasta para o seu usuário atual
+    # para você conseguir mover arquivos para lá depois sem erro
+    sudo chown -R $USER:$USER /var/www/html/patch/
+    
+    sudo chmod -R 755 /var/www/html/patch/
+    sucesso "Pasta criada e permissões ajustadas!"
+    echo ""
+fi
 # --------------------------------------------------
 
 # PRIMEIRA PERGUNTA
