@@ -57,10 +57,10 @@ def buscar_ip_configurado():
 # CONFIGURAÇÕES
 # ==========================================================
 SERVER_IP   = buscar_ip_configurado()
-BASE_DIR    = "/var/www/html/patch/files_to_update"
-PASTA_MARS  = "/var/www/html/patch/files_to_update/local/mars"
+BASE_DIR    = "/var/www/patch/files_to_update"
+PASTA_MARS  = "/var/www/patch/files_to_update/local/mars"
 URL_PREFIX  = "http://%s/patch/files_to_update" % SERVER_IP
-OUTPUT_FILE = "/var/www/html/patch/patch.json"
+OUTPUT_FILE = "/var/www/patch/patch.json"
 
 def get_md5(fname):
     hash_md5 = hashlib.md5()
