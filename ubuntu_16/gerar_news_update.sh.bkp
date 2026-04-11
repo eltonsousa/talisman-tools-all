@@ -10,7 +10,7 @@ SEM_COR='\033[0m'
 
 # FUNÇÕES DE INTERFACE
 linha() { echo -e "${AZUL_B}============================================================${SEM_COR}"; }
-titulo() { linha; echo -e "    $1 "; linha; }
+titulo() { linha; echo -e "   $1 "; linha; }
 sucesso() { echo -e "${VERDE_B}[OK]${SEM_COR} $1"; }
 aviso() { echo -e "${AMARELO}[AVISO]${SEM_COR} $1"; }
 erro() { echo -e "${VERMELHO}[ERRO]${SEM_COR} $1"; }
@@ -18,26 +18,6 @@ erro() { echo -e "${VERMELHO}[ERRO]${SEM_COR} $1"; }
 # INÍCIO PADRONIZADO
 clear
 titulo "GERENCIADOR DE NEWS - TALISMAN ONLINE"
-
-# --- AJUSTE SOLICITADO: VERIFICAÇÃO DE DIRETÓRIO ---
-PASTA_MARS="/var/www/html/patch/files_to_update/local/mars"
-
-if [ ! -d "$PASTA_MARS" ]; then
-    aviso "Pasta de arquivos editados (mars) não encontrada."
-    echo -e "${CIANO}>>> Criando diretório com privilégios de root...${SEM_COR}"
-    
-    # Criamos a pasta usando sudo
-    sudo mkdir -p "$PASTA_MARS"
-    
-    # Ajustamos o dono da pasta para o seu usuário atual
-    # para você conseguir mover arquivos para lá depois sem erro
-    sudo chown -R $USER:$USER /var/www/html/patch/
-    
-    sudo chmod -R 755 /var/www/html/patch/
-    sucesso "Pasta criada e permissões ajustadas!"
-    echo ""
-fi
-# --------------------------------------------------
 
 # PRIMEIRA PERGUNTA
 read -p " [?] Deseja atualizar o News do Launcher agora? (s/n): " SIM_NAO
@@ -119,7 +99,7 @@ EOF
 done
 
 echo "]" >> "$OUTPUT"
-sudo chmod 644 "$OUTPUT"
+sudo chmod 644 "$OUTPUT" #
 echo ""
 sucesso "Arquivo atualizado em: $OUTPUT"
 linha

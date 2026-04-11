@@ -39,6 +39,7 @@ def erro(texto):
 # FUNÇÃO PARA CAPTURAR O IP DO ARQUIVO .INI (DINÂMICO)
 # ==========================================================
 def buscar_ip_configurado():
+    # Caminho onde o seu script de Shell salva o NOVO_IP
     ini_path = "/home/talisman/server/game/server_user.ini"
     ip_padrao = "127.0.0.1"
     
@@ -46,6 +47,7 @@ def buscar_ip_configurado():
         try:
             with open(ini_path, "r") as f:
                 content = f.read()
+                # Busca o valor configurado em sv1 = "IP"
                 match = re.search(r'sv1\s*=\s*"([^"]+)"', content)
                 if match:
                     return match.group(1)
@@ -58,7 +60,6 @@ def buscar_ip_configurado():
 # ==========================================================
 SERVER_IP   = buscar_ip_configurado()
 BASE_DIR    = "/var/www/html/patch/files_to_update"
-PASTA_MARS  = "/var/www/html/patch/files_to_update/local/mars"
 URL_PREFIX  = "http://%s/patch/files_to_update" % SERVER_IP
 OUTPUT_FILE = "/var/www/html/patch/patch.json"
 
@@ -72,18 +73,8 @@ def get_md5(fname):
 def generate():
     os.system('clear')
     titulo("GERADOR DE PATCH - TALISMAN ONLINE")
-
-    # --- AJUSTE SOLICITADO: VERIFICAÇÃO E CRIAÇÃO DA PASTA MARS ---
-    if not os.path.exists(PASTA_MARS):
-        aviso("Pasta de arquivos editados (mars) nao encontrada.")
-        try:
-            # os.makedirs com exist_ok=True cria toda a arvore de pastas necessária
-            os.makedirs(PASTA_MARS)
-            sucesso("Diretorio criado: %s" % PASTA_MARS)
-        except Exception as e:
-            erro("Nao foi possivel criar a pasta: %s" % str(e))
-    # --------------------------------------------------------------
     
+    # Exibe o IP que o script encontrou automaticamente
     print(" [i] IP Detectado automaticamente: %s%s%s" % (CIANO, SERVER_IP, SEM_COR))
 
     if sys.version_info[0] < 3:
