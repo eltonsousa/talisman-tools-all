@@ -12,11 +12,25 @@ echo "============================================================"
 echo "          INSTALADOR TALISMAN-TOOLS-ALL | by ELTON"
 echo "============================================================"
 
-# 1. Identifica a versão do Ubuntu
-if [ -f /etc/os-release ]; then
+# 1. Identifica a versão do Ubuntu (Método Universal)
+if [ -f /etc/lsb-release ]; then
+    . /etc/lsb-release
+    OS_VER=$DISTRIB_RELEASE
+    elif [ -f /etc/os-release ]; then
     . /etc/os-release
     OS_VER=$VERSION_ID
+    elif [ -f /etc/debian_version ]; then
+    # Fallback para versões muito antigas (10.04 por exemplo)
+    OS_VER=$(cat /etc/issue | grep -oP '\d+\.\d+' | head -n1)
 else
+    # Se tudo falhar, tenta via comando lsb_release
+    OS_VER=$(lsb_release -rs 2>/dev/null)
+fi
+
+# Limpa aspas se houver (ex: "14.04" vira 14.04)
+OS_VER=$(echo $OS_VER | tr -d '"')
+
+if [ -z "$OS_VER" ]; then
     echo "❌ Erro: Sistema operacional não identificado."
     exit 1
 fi

@@ -33,15 +33,24 @@ if [ "$EUID" -ne 0 ]; then
     exit
 fi
 
+# DEFINIR VARIÁVEIS DE CAMINHO LOGO NO INÍCIO
+DIRETORIO_BASE="/home/talisman/server"
+ORIGEM_REGISTRO="/home/talisman/pagina-registro"
+
 read -p " [?] DESEJA INSTALAR O SERVER TALISMAN (S/N): " INSTALAR_SERVIDOR
 if [[ "$INSTALAR_SERVIDOR" =~ ^[Ss]$ ]]; then
     
     passo "1" "ATUALIZANDO REPOSITÓRIOS (OLD-RELEASES)"
+    
+    echo 'Acquire::Check-Valid-Until "false";' > /etc/apt/apt.conf.d/99no-check-valid-until
+    
     cp /etc/apt/sources.list /etc/apt/sources.list.bkp
     echo "deb http://old-releases.ubuntu.com/ubuntu/ lucid main restricted universe multiverse
 deb http://old-releases.ubuntu.com/ubuntu/ lucid-updates main restricted universe multiverse
     deb http://old-releases.ubuntu.com/ubuntu/ lucid-security main restricted universe multiverse" > /etc/apt/sources.list
-    apt-get update -qq
+    
+    apt-get update -o Acquire::Check-Valid-Until=false
+    
     sucesso "Repositórios configurados para Old-Releases."
     
     sleep 3
@@ -49,20 +58,22 @@ deb http://old-releases.ubuntu.com/ubuntu/ lucid-updates main restricted univers
     passo "2" "INSTALANDO DEPENDÊNCIAS DO SISTEMA"
     aviso "Instalando Apache, MySQL, PHP5 e Screen..."
     apt-get install ssh apache2 mysql-server php5 php5-mysql php5-gd screen wget -y
+    apt-get -f install -Y
+    
     sucesso "Dependências instaladas."
     
     sleep 3
     clear
     
     passo "3" "BIBLIOTECA MYSQL (LIBMYSQLCLIENT15OFF)"
-    if [ -f "/home/talisman/libmysqlclient15off_5.0.92-b23.87.lenny_i386.deb" ]; then
-        dpkg -i /home/talisman/libmysqlclient15off_5.0.92-b23.87.lenny_i386.deb > /dev/null
+    if [ -f "/home/talisman/LibMysqlClient15.deb" ]; then
+        dpkg -i /home/talisman/LibMysqlClient15.deb > /dev/null
         ln -sf /usr/lib/libmysqlclient.so.15.0.0 /usr/lib/libmysqlclient.so.15
         ldconfig
         sucesso "Biblioteca MySQL 15 instalada e vinculada."
     else
         erro "Arquivo .deb não encontrado em /home/talisman/"
-        aviso "Copie o arquivo via FileZilla e reinicie o processo."
+        aviso "Copie o arquivo LibMysqlClient15.deb e reinicie o processo."
     fi
     
     sleep 3
@@ -84,8 +95,6 @@ deb http://old-releases.ubuntu.com/ubuntu/ lucid-updates main restricted univers
     echo -e "${AZUL}------------------------------------------------------------${SEM_COR}"
     
     passo "5" "CONFIGURAÇÃO DOS ARQUIVOS .ini"
-    DIRETORIO_BASE="/home/talisman/server"
-    ORIGEM_REGISTRO="/home/talisman/pagina-registro"
     
     if [ -d "$DIRETORIO_BASE" ]; then
         # DANDO PERMISSÃO AOS ARQUIVOS
@@ -253,52 +262,7 @@ EOF
     
     sleep 3
     clear
-    passo "10" "CONFIGURAÇÃO DO HAMACHI"
-    read -p " [?] DESEJA INSTALAR O HAMACHI AGORA? (S/N): " INSTALAR_HAMACHI
-    if [[ "$INSTALAR_HAMACHI" =~ ^[Ss]$ ]]; then
-        HAMACHI_LOCAL="/home/talisman/logmein-hamachi_2.1.0.203-1_i386.deb"
-        echo -e "${CIANO}>>> Preparando Libs de Compatibilidade...${SEM_COR}"
-        wget http://archive.debian.org/debian/pool/main/g/gcc-4.7/libstdc++6_4.7.2-5_i386.deb --no-check-certificate -q
-        
-        if [ -f "libstdc++6_4.7.2-5_i386.deb" ]; then
-            mkdir -p temp_lib && dpkg-deb -x libstdc++6_4.7.2-5_i386.deb temp_lib/
-            mkdir -p /usr/lib/i386-linux-gnu/
-            cp temp_lib/usr/lib/i386-linux-gnu/libstdc++.so.6.0.17 /usr/lib/i386-linux-gnu/
-            rm -f /usr/lib/libstdc++.so.6
-            cp /usr/lib/i386-linux-gnu/libstdc++.so.6.0.17 /usr/lib/libstdc++.so.6
-            rm -rf temp_lib libstdc++6_*.deb
-            ldconfig
-            sucesso "Libs do GCC 4.7 configuradas."
-        fi
-        
-        if [ -f "$HAMACHI_LOCAL" ]; then
-            dpkg -i "$HAMACHI_LOCAL" > /dev/null
-            mkdir -p /var/lib/logmein-hamachi/
-            echo "Ipc.User talisman" > /var/lib/logmein-hamachi/h2-engine-override.cfg
-            apt-get install -f -y > /dev/null
-            /etc/init.d/logmein-hamachi restart > /dev/null
-            sleep 3
-            hamachi login
-            
-            echo -n -e "${CIANO}Aguardando rede Hamachi...${SEM_COR}"
-            tentativas=0
-            while [ "$(hamachi | grep -i 'status' | awk '{print $3}')" == "offline" ] && [ $tentativas -lt 15 ]; do
-                echo -n "."
-                sleep 3
-                tentativas=$((tentativas+1))
-            done
-            echo -e "\n"
-            read -p " [?] DIGITE O APELIDO (NICK) PARA ESTE SERVIDOR: " NOME_PC
-            hamachi set-nick "$NOME_PC"
-            sucesso "Hamachi configurado."
-            hamachi
-        else
-            erro "Instalador do Hamachi não encontrado em $HAMACHI_LOCAL"
-        fi
-    fi
     
-    sleep 2
-    clear
     echo -e "\n${VERDE_B}============================================================"
     echo -e "       INSTALAÇÃO CONCLUÍDA COM SUCESSO!"
     echo -e "============================================================${SEM_COR}"

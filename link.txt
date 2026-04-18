@@ -1,1 +1,6 @@
+sudo apt-get update
+
+sudo apt-get install curl
+
 curl -sSL https://raw.githubusercontent.com/eltonsousa/talisman-tools-all/main/install.sh | sudo bash
+
