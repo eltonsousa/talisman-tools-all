@@ -20,7 +20,7 @@ clear
 titulo "GERENCIADOR DE NEWS - TALISMAN ONLINE"
 
 # --- AJUSTE SOLICITADO: VERIFICAÇÃO DE DIRETÓRIO ---
-PASTA_MARS="/var/www/html/patch/files_to_update/local/mars"
+PASTA_MARS="/var/www/patch/files_to_update/local/mars"
 
 if [ ! -d "$PASTA_MARS" ]; then
     aviso "Pasta de arquivos editados (mars) não encontrada."
@@ -31,9 +31,9 @@ if [ ! -d "$PASTA_MARS" ]; then
     
     # Ajustamos o dono da pasta para o seu usuário atual
     # para você conseguir mover arquivos para lá depois sem erro
-    sudo chown -R $USER:$USER /var/www/html/patch/
+    sudo chown -R $USER:$USER /var/www/patch/
     
-    sudo chmod -R 755 /var/www/html/patch/
+    sudo chmod -R 755 /var/www/patch/
     sucesso "Pasta criada e permissões ajustadas!"
     echo ""
 fi
@@ -49,7 +49,7 @@ if [[ ! "$SIM_NAO" =~ ^[Ss]$ ]]; then
     exit 0
 fi
 
-OUTPUT="/var/www/html/patch/news.json"
+OUTPUT="/var/www/patch/news.json"
 
 listar_noticias() {
     echo -e "${CIANO}--- Notícias Atuais ---${SEM_COR}"
